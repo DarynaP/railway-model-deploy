@@ -10,6 +10,7 @@ from peewee import (
 )
 from playhouse.shortcuts import model_to_dict
 from playhouse.db_url import connect
+from utils import decompress_pickle
 
 
 ########################################
@@ -44,7 +45,7 @@ with open('dtypes.pickle', 'rb') as fh:
     dtypes = pickle.load(fh)
 
 
-pipeline = joblib.load('pipeline.pickle')
+pipeline = decompress_pickle('pipeline.pickle.pbz2')
 
 
 # End model un-pickling

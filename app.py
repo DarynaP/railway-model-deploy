@@ -1,20 +1,21 @@
-import joblib
+import os
 import json
 import pickle
+import joblib
 import pandas as pd
 from flask import Flask, jsonify, request
 from peewee import (
-    SqliteDatabase, PostgresqlDatabase, Model, IntegerField,
-    FloatField, TextField, IntegrityError
+    Model, IntegerField, FloatField,
+    TextField, IntegrityError
 )
 from playhouse.shortcuts import model_to_dict
+from playhouse.db_url import connect
 
 
 ########################################
 # Begin database stuff
 
-DB = SqliteDatabase('predictions.db')
-
+DB = connect(os.environ.get('DATABASE_URL') or 'sqlite:///predictions.db')
 
 class Prediction(Model):
     observation_id = IntegerField(unique=True)
@@ -99,8 +100,15 @@ def update():
         return jsonify({'error': error_msg})
 
 
+@app.route('/list-db-contents')
+def list_db_contents():
+    return jsonify([
+        model_to_dict(obs) for obs in Prediction.select()
+    ])
+
+
 # End webserver stuff
 ########################################
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True, port=5000)

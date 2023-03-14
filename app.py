@@ -15,7 +15,7 @@ from playhouse.db_url import connect
 ########################################
 # Begin database stuff
 
-DB = connect(os.environ.get('DATABASE_URL') or 'sqlite:///predictions.db')
+DB = connect(os.environ.get('DATABASE_URL'))
 
 class Prediction(Model):
     observation_id = IntegerField(unique=True)
